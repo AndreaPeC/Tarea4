@@ -17,12 +17,22 @@ locs = np.array ([
 
 generator = np.random.default_rng(1010)
 weights = generator.normal(size =10)
-print(weights)
+#print(weights)
+
+#Filtrar peces que están dentro del arreglo/pecera 5x5x5 (i, j, k <= 4)
+validos = (locs[:, 0] < 5) & (locs[:, 1] < 5) & (locs[:, 2] < 5)
+locs_validos = locs[validos]
+#Nos quedamos solo con los peces que si estan en la pecera
+weights_validos = abs(weights[validos])
+print("Los pesos de los peces que estan dentro de la pecera son:\n", weights_validos )
+
+print("Peces (indices) que si estan dentro de la pecera:", np.where(validos)[0])
+print("Posiciones válidas:\n", locs_validos)
 
 #Indexo las posiciones por pez
-index = np.arange(locs.shape[0])
+index = np.arange(locs_validos.shape[0])
 #print(index)
-locs_con_indices = np.c_[locs, index]
+locs_con_indices = np.c_[locs_validos, index]
 #print(locs_con_indices)
 
 #Agrupar índices de peces por posiciones
@@ -40,7 +50,7 @@ for i, j, k, idx in locs_con_indices:
 sobrevivientes = []
 for peces in repetidos.values():
     #Buscamos el indice del mas pesado
-    peso_max_idx = int(peces[np.argmax(weights[peces])])
+    peso_max_idx = int(peces[np.argmax(weights_validos[peces])])
     #Lo agregamos a la lista de salida
     sobrevivientes.append(peso_max_idx)
 
